@@ -26,6 +26,12 @@
 #include <platform_api.h>
 #include "platform.h"
 
+#ifdef USE_ES310
+#include <sound/es310.h>
+#include <fcntl.h>
+#include <linux/ioctl.h>
+#endif
+
 #define LIB_ACDB_LOADER "libacdbloader.so"
 #define LIB_CSD_CLIENT "libcsd-client.so"
 
@@ -206,6 +212,83 @@ static const int acdb_device_table[SND_DEVICE_MAX] = {
 static pthread_once_t check_op_once_ctl = PTHREAD_ONCE_INIT;
 static bool is_tmus = false;
 
+#ifdef USE_ES310
+static int mES310Fd = -1;
+static int mES310Mode = ES310_PRESET_AUDIOPATH_DISABLE;
+static int mES310Preset;
+static int setES310Mode(int mode);
+static int setES310Preset(int preset);
+static int initES310(bool reset);
+
+int initES310(bool reset) {
+    int rc = 0;
+
+    if (mES310Fd < 0) {
+        mES310Fd = open("/dev/audience_es310", O_RDWR);
+        if (!mES310Fd) {
+            ALOGE("%s: unable to open es310 device!", __func__);
+            return -1;
+        } else {
+            ALOGI("%s: device opened, fd=%d", __func__, mES310Fd);
+        }
+    }
+
+    if(reset) {
+        rc = ioctl(mES310Fd, ES310_RESET_CMD);
+        if (rc < 0) {
+            ALOGE("%s: failed to reset es310 device, errno=%d", __func__, errno);
+            return rc;
+        }
+    }
+
+
+    setES310Mode(ES310_PATH_SUSPEND);
+    setES310Preset(ES310_PRESET_AUDIOPATH_DISABLE);
+
+    return rc;
+}
+
+int setES310Mode(int mode)
+{
+    int rc = -1;
+
+    if (mES310Mode != mode) {
+        if (mES310Fd < 0) {
+            initES310(false);
+        }
+
+        rc = ioctl(mES310Fd, ES310_SET_CONFIG, &mode);
+        if (rc < 0)
+            ALOGE("%s: ioctl failed, errno=%d", __func__, errno);
+        else {
+            mES310Mode = mode;
+            ALOGD("%s: set mode=%d", __func__, mode);
+        }
+    }
+    return rc;
+}
+
+int setES310Preset(int preset)
+{
+    int rc = -1;
+
+    if (mES310Preset != preset) {
+        if (mES310Fd < 0) {
+            initES310(false);
+        }
+
+        rc = ioctl(mES310Fd, ES310_SET_PRESET, &preset);
+        if (rc < 0)
+            ALOGE("%s: ioctl failed, errno=%d", __func__, errno);
+        else {
+            mES310Preset = preset;
+            ALOGD("%s: set preset=%x", __func__, preset);
+        }
+    }
+    return rc;
+}
+#endif
+
 static void check_operator()
 {
     char value[PROPERTY_VALUE_MAX];
@@ -358,6 +441,10 @@ void *platform_init(struct audio_device *adev)
             my_data->csd_client_init();
         }
     }
+
+#ifdef USE_ES310
+    initES310(true);
+#endif
 
     return my_data;
 }
