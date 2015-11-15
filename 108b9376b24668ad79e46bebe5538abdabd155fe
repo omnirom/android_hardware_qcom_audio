@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8f5b13e_fc59405d",
+        "filename": "hal/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000515
+      },
+      "writtenOn": "2015-11-15T13:47:42Z",
+      "side": 1,
+      "message": "IMHO you can use LOCAL_CFLAGS :\u003d instead of +\u003d .\nJust for safe coding.",
+      "range": {
+        "startLine": 11,
+        "startChar": 19,
+        "endLine": 11,
+        "endChar": 51
+      },
+      "revId": "108b9376b24668ad79e46bebe5538abdabd155fe",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    }
+  ]
+}
