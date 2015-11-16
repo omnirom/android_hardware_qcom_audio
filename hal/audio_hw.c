@@ -65,7 +65,12 @@
 #define MIN_CHANNEL_COUNT                1
 #define DEFAULT_CHANNEL_COUNT            2
 
+#ifdef MAX_TARGET_SPECIFIC_CHANNEL_CNT
 #define MAX_CHANNEL_COUNT atoi(XSTR(MAX_TARGET_SPECIFIC_CHANNEL_CNT))
+#else
+#define MAX_CHANNEL_COUNT                2
+#endif
+
 #define XSTR(x) STR(x)
 #define STR(x) #x
 
