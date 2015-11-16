@@ -65,7 +65,12 @@
 #define MIN_CHANNEL_COUNT                1
 #define DEFAULT_CHANNEL_COUNT            2
 
+#ifdef MAX_TARGET_SPECIFIC_CHANNEL_CNT
 #define MAX_CHANNEL_COUNT atoi(XSTR(MAX_TARGET_SPECIFIC_CHANNEL_CNT))
+#else
+#define MAX_CHANNEL_COUNT                2
+#endif
+
 #define XSTR(x) STR(x)
 #define STR(x) #x
 
@@ -1239,7 +1244,7 @@ static int check_input_parameters(uint32_t sample_rate,
     }
 
     if ((channel_count < MIN_CHANNEL_COUNT) || (channel_count > MAX_CHANNEL_COUNT)) {
-        ALOGE("%s: unsupported channel count (%d) passed  Min / Max (%d\%d)", __func__,
+        ALOGE("%s: unsupported channel count (%d) passed  Min / Max (%d / %d)", __func__,
                channel_count, MIN_CHANNEL_COUNT, MAX_CHANNEL_COUNT);
         return -EINVAL;
     }
