@@ -44,6 +44,13 @@ LOCAL_SRC_FILES := \
 LOCAL_SRC_FILES += audio_extn/audio_extn.c \
                    audio_extn/utils.c
 
+LOCAL_C_INCLUDES += $(BOARD_KERNEL_HEADER_DIR)
+LOCAL_ADDITIONAL_DEPENDENCIES += $(BOARD_KERNEL_HEADER_DEPENDENCIES)
+
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_ASM_LOOPBACK_RX)),true)
+  LOCAL_CFLAGS += -DASM_LOOPBACK_RX_ENABLED
+endif
+
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_PCM_OFFLOAD)),true)
     LOCAL_CFLAGS += -DPCM_OFFLOAD_ENABLED
 endif
@@ -170,8 +177,10 @@ ifeq ($(strip $(AUDIO_FEATURE_ENABLED_DEV_ARBI)),true)
     LOCAL_SRC_FILES += audio_extn/dev_arbi.c
 endif
 
+ifneq ($(TARGET_SUPPORTS_WEARABLES),true)
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_RECORD_PLAY_CONCURRENCY)),true)
     LOCAL_CFLAGS += -DRECORD_PLAY_CONCURRENCY
+endif
 endif
 
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_ACDB_LICENSE)), true)
@@ -192,6 +201,15 @@ ifeq ($(strip $(AUDIO_FEATURE_ENABLED_SPLIT_A2DP)),true)
     LOCAL_SRC_FILES += audio_extn/a2dp.c
 endif
 
+
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_SOURCE_TRACKING)),true)
+    LOCAL_CFLAGS += -DSOURCE_TRACKING_ENABLED
+    LOCAL_SRC_FILES += audio_extn/source_track.c
+endif
+
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_AUDIOSPHERE)),true)
+    LOCAL_CFLAGS += -DAUDIOSPHERE_ENABLED
+endif
 
 LOCAL_SHARED_LIBRARIES := \
 	liblog \

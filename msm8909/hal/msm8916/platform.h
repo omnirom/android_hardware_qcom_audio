@@ -203,6 +203,7 @@ enum {
 #define HFP_PCM_RX 5
 #define HFP_SCO_RX 17
 #define HFP_ASM_RX_TX 18
+#define HFP_ASM_RX_TX_SESSION2 36
 
 #define INCALL_MUSIC_UPLINK_PCM_DEVICE 1
 #define INCALL_MUSIC_UPLINK2_PCM_DEVICE 16
@@ -264,4 +265,12 @@ struct csd_data {
 
 int platform_get_subsys_image_name (char *buf);
 
+
+#define ENUM_TO_STRING(X) #X
+
+struct audio_device_to_audio_interface {
+    audio_devices_t device;
+    char device_name[100];
+    char interface_name[100];
+};
 #endif // QCOM_AUDIO_PLATFORM_H

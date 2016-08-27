@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 The Android Open Source Project
+ * Copyright (C) 2013-2016 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,15 @@
 #include <audio_route/audio_route.h>
 #include "voice.h"
 
+// dlopen() does not go through default library path search if there is a "/" in the library name.
+#ifdef __LP64__
+#define VISUALIZER_LIBRARY_PATH "/system/lib64/soundfx/libqcomvisualizer.so"
+#define OFFLOAD_EFFECTS_BUNDLE_LIBRARY_PATH "/system/lib64/soundfx/libqcompostprocbundle.so"
+#else
 #define VISUALIZER_LIBRARY_PATH "/system/lib/soundfx/libqcomvisualizer.so"
 #define OFFLOAD_EFFECTS_BUNDLE_LIBRARY_PATH "/system/lib/soundfx/libqcompostprocbundle.so"
-#define ADM_LIBRARY_PATH "/system/vendor/lib/libadm.so"
+#endif
+#define ADM_LIBRARY_PATH "libadm.so"
 
 /* Flags used to initialize acdb_settings variable that goes to ACDB library */
 #define DMIC_FLAG       0x00000002
@@ -44,8 +50,6 @@
 
 #define MAX_SUPPORTED_CHANNEL_MASKS 2
 #define DEFAULT_HDMI_OUT_CHANNELS   2
-
-typedef int snd_device_t;
 
 /* These are the supported use cases by the hardware.
  * Each usecase is mapped to a specific PCM device.
@@ -69,13 +73,29 @@ enum {
     USECASE_AUDIO_RECORD,
     USECASE_AUDIO_RECORD_LOW_LATENCY,
 
-    USECASE_VOICE_CALL,
+    /* Voice extension usecases
+     *
+     * Following usecase are specific to voice session names created by
+     * MODEM and APPS on 8992/8994/8084/8974 platforms.
+     */
+    USECASE_VOICE_CALL,  /* Usecase setup for voice session on first subscription for DSDS/DSDA */
+    USECASE_VOICE2_CALL, /* Usecase setup for voice session on second subscription for DSDS/DSDA */
+    USECASE_VOLTE_CALL,  /* Usecase setup for VoLTE session on first subscription */
+    USECASE_QCHAT_CALL,  /* Usecase setup for QCHAT session */
+    USECASE_VOWLAN_CALL, /* Usecase setup for VoWLAN session */
 
-    /* Voice extension usecases */
-    USECASE_VOICE2_CALL,
-    USECASE_VOLTE_CALL,
-    USECASE_QCHAT_CALL,
-    USECASE_VOWLAN_CALL,
+    /*
+     * Following usecase are specific to voice session names created by
+     * MODEM and APPS on 8996 platforms.
+     */
+
+    USECASE_VOICEMMODE1_CALL, /* Usecase setup for Voice/VoLTE/VoWLAN sessions on first
+                               * subscription for DSDS/DSDA
+                               */
+    USECASE_VOICEMMODE2_CALL, /* Usecase setup for voice/VoLTE/VoWLAN sessions on second
+                               * subscription for DSDS/DSDA
+                               */
+
     USECASE_INCALL_REC_UPLINK,
     USECASE_INCALL_REC_DOWNLINK,
     USECASE_INCALL_REC_UPLINK_AND_DOWNLINK,
@@ -175,6 +195,7 @@ struct stream_in {
     audio_usecase_t usecase;
     bool enable_aec;
     bool enable_ns;
+    int64_t frames_read; /* total frames read, not cleared when entering standby */
 
     audio_io_handle_t capture_handle;
     audio_input_flags_t flags;
@@ -182,6 +203,7 @@ struct stream_in {
     bool is_st_session_active;
 
     struct audio_device *dev;
+    audio_format_t format;
 };
 
 typedef enum {
@@ -264,6 +286,10 @@ struct audio_device {
     adm_deregister_stream_t adm_deregister_stream;
     adm_request_focus_t adm_request_focus;
     adm_abandon_focus_t adm_abandon_focus;
+
+    /* logging */
+    snd_device_t last_logged_snd_device[AUDIO_USECASE_MAX][2]; /* [out, in] */
+
 };
 
 int select_devices(struct audio_device *adev,
