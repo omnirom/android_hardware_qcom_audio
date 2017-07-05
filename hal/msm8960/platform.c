@@ -584,6 +584,12 @@ int platform_set_voice_volume(void *platform, int volume)
     return ret;
 }
 
+int platform_update_usecase_from_source(int source, int usecase)
+{
+    ALOGV("%s: input source :%d", __func__, source);
+    return usecase;
+}
+
 int platform_set_mic_mute(void *platform, bool state)
 {
     struct platform_data *my_data = (struct platform_data *)platform;
