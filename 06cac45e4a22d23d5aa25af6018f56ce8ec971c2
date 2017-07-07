@@ -16,6 +16,24 @@
       "revId": "06cac45e4a22d23d5aa25af6018f56ce8ec971c2",
       "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ebc2d2ef_4db5b2ca",
+        "filename": "hal/audio_hw.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 1002033
+      },
+      "writtenOn": "2017-07-07T04:52:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6ff9bcf7_4a1d53be",
+      "revId": "06cac45e4a22d23d5aa25af6018f56ce8ec971c2",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
     }
   ]
 }
