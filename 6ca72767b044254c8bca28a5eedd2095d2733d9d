@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8345d8e_fd444d26",
+        "filename": "hal/audio_hw.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 1000515
+      },
+      "writtenOn": "2017-07-07T15:12:43Z",
+      "side": 1,
+      "message": "hmmmmm!\nmake sure that logic is correct\nfrom sources seems that if sound device is invalid then we will get a \"go to\" statement.",
+      "revId": "6ca72767b044254c8bca28a5eedd2095d2733d9d",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    }
+  ]
+}
