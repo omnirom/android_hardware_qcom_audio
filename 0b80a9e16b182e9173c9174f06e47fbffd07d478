@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ffbea09_708df9f5",
+        "filename": "hal/audio_hw.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1000026
+      },
+      "writtenOn": "2017-07-07T12:32:29Z",
+      "side": 1,
+      "message": "and where this PLATFORM_MSM8960 comes from?\naside #idefs should always be in column 0\n\nyou miss something like this for your TARGET_BOARD_PLATFORM https://github.com/omnirom/android_hardware_qcom_audio-caf-msm8974/blob/android-7.0/hal/Android.mk#L18",
+      "revId": "0b80a9e16b182e9173c9174f06e47fbffd07d478",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    }
+  ]
+}
