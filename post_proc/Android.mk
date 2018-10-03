@@ -63,7 +63,8 @@ endif
 
 LOCAL_HEADER_LIBRARIES := libhardware_headers \
                           libsystem_headers \
-                          libutils_headers
+                          libutils_headers \
+                          generated_kernel_headers
 
 LOCAL_SHARED_LIBRARIES := \
         libcutils \
@@ -139,7 +140,8 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_HEADER_LIBRARIES := libhardware_headers \
                           libsystem_headers \
-                          libutils_headers
+                          libutils_headers \
+                          generated_kernel_headers
 
 LOCAL_SHARED_LIBRARIES := \
     liblog \
@@ -192,7 +194,8 @@ LOCAL_CFLAGS+= -O2 -fvisibility=hidden
 
 LOCAL_HEADER_LIBRARIES := libhardware_headers \
                           libsystem_headers \
-                          libutils_headers
+                          libutils_headers \
+                          generated_kernel_headers
 
 LOCAL_SHARED_LIBRARIES := \
         libcutils \
@@ -274,6 +277,7 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_HEADER_LIBRARIES += libhardware_headers
 LOCAL_HEADER_LIBRARIES += libsystem_headers
+LOCAL_HEADER_LIBRARIES += generated_kernel_headers
 ifneq ($(filter kona lahaina holi,$(TARGET_BOARD_PLATFORM)),)
 LOCAL_SANITIZE := integer_overflow
 endif

@@ -437,6 +437,8 @@ ifeq ($(strip $(AUDIO_FEATURE_ENABLED_FM_TUNER_EXT)),true)
     LOCAL_CFLAGS += -DFM_TUNER_EXT_ENABLED
 endif
 
+LOCAL_HEADER_LIBRARIES += generated_kernel_headers
+
 LOCAL_MODULE := audio.primary.$(TARGET_BOARD_PLATFORM)
 
 LOCAL_MODULE_RELATIVE_PATH := hw
